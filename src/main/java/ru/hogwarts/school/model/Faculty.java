@@ -1,6 +1,8 @@
 package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -8,7 +10,8 @@ import java.util.Objects;
 @Entity
 public class Faculty {
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = 5)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     private long id;
 
     private String name;
