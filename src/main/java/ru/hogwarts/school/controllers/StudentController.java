@@ -98,16 +98,37 @@ public class StudentController {
         headers.setContentLength(avatar.getData().length);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
+
     @GetMapping(value = "/{id}/avatar-from-file")
-    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException{
+    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findByStudentId(id);
         Path path = Path.of(avatar.getFilePath());
-        try(InputStream is = Files.newInputStream(path);
-            OutputStream os = response.getOutputStream();) {
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream();) {
             response.setStatus(200);
             response.setContentType(avatar.getMediaType());
-            response.setContentLength((int)avatar.getFileSize());
+            response.setContentLength((int) avatar.getFileSize());
             is.transferTo(os);
         }
+    }
+
+    @GetMapping("/count")
+    public int getNumberOfStudents() {
+        return studentService.getNumberOfStudents();
+    }
+
+    @GetMapping("/avg_age")
+    public float getAvgStudentAge() {
+        return studentService.getAvgStudentAge();
+    }
+
+    @GetMapping("/last_five")
+    public ResponseEntity<Collection<Student>> findLastFiveStudent(){
+        return ResponseEntity.ok(studentService.findLastFiveStudent());
+    }
+
+    @GetMapping("/avatar/get_all")
+    public ResponseEntity<Collection<Avatar>> getAllAvatars(@RequestParam("page") Integer pageNumber,@RequestParam("size")Integer pageSize){
+        return ResponseEntity.ok(avatarService.getAllAvatar(pageNumber, pageSize));
     }
 }
