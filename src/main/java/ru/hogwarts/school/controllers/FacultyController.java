@@ -9,6 +9,9 @@ import ru.hogwarts.school.services.FacultyService;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/faculty")
@@ -79,4 +82,35 @@ public class FacultyController {
         return ResponseEntity.ok(resultStudent);
     }
 
+    @GetMapping("/longestNameFaculty")
+    public ResponseEntity getLongestFacultyName() {
+        return ResponseEntity.ok(facultyService.getLongestFacultyName());
+    }
+
+    @GetMapping("/test_stream_endpoint")
+    public long executeTestStreamEndpoint() {
+        int limit = 1_000_000;
+        //Изначальный стрим
+        long time1 = System.nanoTime();
+        long sum1 = Stream.iterate(1l, a -> a + 1L).limit(limit).reduce(0L, (a, b) -> a + b);
+        time1 = System.nanoTime() - time1;
+
+        // 2. Параллельный стрим
+        long time2 = System.nanoTime();
+        long sum2 = IntStream.rangeClosed(1, limit)
+                .parallel()
+                .asLongStream()
+                .reduce(0, (a, b) -> a + b);
+        time2 = System.nanoTime() - time2;
+
+        // 3. Формула Гаусса (самый быстрый)
+        long time3 = System.nanoTime();
+        long sum3 = (long) limit * (1L + limit) / 2;
+        time3 = System.nanoTime() - time3;
+
+        System.out.println("Изначальный стрим:  " + TimeUnit.NANOSECONDS.toMillis(time1) + " ms, sum=" + sum1);
+        System.out.println("Паралельный стрим:  " + TimeUnit.NANOSECONDS.toMillis(time2) + " ms, sum=" + sum2);
+        System.out.println("Формула Гауса:  " + TimeUnit.NANOSECONDS.toMillis(time3) + " ms, sum=" + sum3);
+        return sum3;
+    }
 }

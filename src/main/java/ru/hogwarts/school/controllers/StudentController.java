@@ -123,12 +123,22 @@ public class StudentController {
     }
 
     @GetMapping("/last_five")
-    public ResponseEntity<Collection<Student>> findLastFiveStudent(){
+    public ResponseEntity<Collection<Student>> findLastFiveStudent() {
         return ResponseEntity.ok(studentService.findLastFiveStudent());
     }
 
     @GetMapping("/avatar/get_all")
-    public ResponseEntity<Collection<Avatar>> getAllAvatars(@RequestParam("page") Integer pageNumber,@RequestParam("size")Integer pageSize){
+    public ResponseEntity<Collection<Avatar>> getAllAvatars(@RequestParam("page") Integer pageNumber, @RequestParam("size") Integer pageSize) {
         return ResponseEntity.ok(avatarService.getAllAvatar(pageNumber, pageSize));
+    }
+
+    @GetMapping("/filterBy_A_sorted")
+    public ResponseEntity findAllWhoNameStartA() {
+        return ResponseEntity.ok(studentService.findAllWhoNameStartA());
+    }
+
+    @GetMapping("/avg_age_by_stream")
+    public double getAvgAgeByStream() {
+        return studentService.getAvgAgeByStream();
     }
 }
