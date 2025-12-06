@@ -11,6 +11,7 @@ import ru.hogwarts.school.repositories.StudentRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -86,5 +87,45 @@ public class StudentService {
                 .average()
                 .orElse(0.0);
         return avg;
+    }
+
+    public void getAllStudentParallel() {
+        List<String> result = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .toList();
+
+        System.out.println(result.get(0));
+        System.out.println(result.get(1));
+        new Thread(() -> {
+            System.out.println(result.get(2));
+            System.out.println(result.get(3));
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(result.get(4));
+            System.out.println(result.get(5));
+        }).start();
+    }
+
+    public void getAllStudentSynchro() {
+        List<String> result = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .toList();
+        doPrintSynhro(result.get(0));
+        doPrintSynhro(result.get(1));
+
+        new Thread(() -> {
+            doPrintSynhro(result.get(2));
+            doPrintSynhro(result.get(3));
+        }).start();
+
+        new Thread(() -> {
+            doPrintSynhro(result.get(4));
+            doPrintSynhro(result.get(5));
+        }).start();
+    }
+
+    public synchronized void doPrintSynhro(String name) {
+        System.out.println(name);
     }
 }
