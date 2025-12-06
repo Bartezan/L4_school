@@ -141,4 +141,15 @@ public class StudentController {
     public double getAvgAgeByStream() {
         return studentService.getAvgAgeByStream();
     }
+
+    @GetMapping("/print-parallel")
+    public void getAllStudentParallel() {
+        studentService.getAllStudentParallel();
+    }
+
+    @GetMapping("/print-synchronized")
+    public void getAllStudentSynchro() {
+        studentService.getAllStudentSynchro();
+    }
+
 }
