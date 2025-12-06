@@ -26,7 +26,7 @@ public class FacultyService {
     }
 
     public Faculty findFaculty(long id) {
-        logger.info("Was invoked method for find faculty by id: {}",id);
+        logger.info("Was invoked method for find faculty by id: {}", id);
         return facultyRepository.findById(id).get();
     }
 
@@ -36,18 +36,26 @@ public class FacultyService {
     }
 
     public void deleteFaculty(long id) {
-        logger.info("Was invoked method for delete faculty by id: {}",id);
+        logger.info("Was invoked method for delete faculty by id: {}", id);
         facultyRepository.deleteById(id);
     }
 
     public Collection<Faculty> findByColor(String color) {
-        logger.info("Was invoked method for find faculty by color: {}",color);
+        logger.info("Was invoked method for find faculty by color: {}", color);
         return facultyRepository.findByColor(color);
     }
 
     public Faculty findByNameIgnoreCaseOrColorIgnoreCase(String name, String color) {
-        logger.info("Was invoked method for find faculty by name or color : {}, {}",name,color);
+        logger.info("Was invoked method for find faculty by name or color : {}, {}", name, color);
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    }
+
+    public String getLongestFacultyName() {
+        String longestName = facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max((s1, s2) -> Integer.compare(s1.length(), s2.length()))
+                .orElse("Список факультетов пуст");
+        return longestName;
     }
 
 

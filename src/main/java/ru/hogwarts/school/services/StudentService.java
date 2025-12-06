@@ -8,7 +8,10 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.StudentRepository;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,7 +31,7 @@ public class StudentService {
     }
 
     public Student findStudent(long id) {
-        logger.info("Was invoked method for find student by id: {}",id);
+        logger.info("Was invoked method for find student by id: {}", id);
         return studentRepository.findById(id).get();
     }
 
@@ -38,26 +41,26 @@ public class StudentService {
     }
 
     public void deleteStudent(long id) {
-        logger.info("Was invoked method for delete student by id: {}",id);
+        logger.info("Was invoked method for delete student by id: {}", id);
         studentRepository.deleteById(id);
     }
 
     public Collection<Student> findByAge(int age) {
-        logger.info("Was invoked method for find student by age: {}",age);
+        logger.info("Was invoked method for find student by age: {}", age);
         return studentRepository.findByAge(age);
     }
 
     public Collection<Student> findByAgeBetween(int first, int second) {
-        logger.info("Was invoked method for find student by age between values {},{}",first,second);
+        logger.info("Was invoked method for find student by age between values {},{}", first, second);
         return studentRepository.findByAgeBetween(first, second);
     }
 
-    public int getNumberOfStudents(){
+    public int getNumberOfStudents() {
         logger.info("Was invoked method for get number of student");
         return studentRepository.getNumberOfStudents();
     }
 
-    public float getAvgStudentAge(){
+    public float getAvgStudentAge() {
         logger.info("Was invoked method for get avg student age");
         return studentRepository.getAvgStudentAge();
     }
@@ -65,5 +68,23 @@ public class StudentService {
     public Collection<Student> findLastFiveStudent() {
         logger.info("Was invoked method for find last 5 add student");
         return studentRepository.findLastFiveStudent();
+    }
+
+    public Collection<String> findAllWhoNameStartA() {
+        Collection<String> result = studentRepository.findAll().stream()
+                .filter(s -> s.getName().startsWith("А"))
+                .sorted(Comparator.comparing(Student::getName))
+                .map(Student::getName)
+                .peek(System.out::println)
+                .toList();
+        return result;
+    }
+
+    public double getAvgAgeByStream() {
+        double avg = studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
+        return avg;
     }
 }
